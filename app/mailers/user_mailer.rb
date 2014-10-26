@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default from: "noreply@localhost:3000"
+  default from: "noreply@polar-falls-4416.herokuapp.com"
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
