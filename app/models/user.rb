@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_many :events, dependent: :destroy
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save :downcase_email
   before_create :create_activation_digest
@@ -13,6 +14,10 @@ class User < ActiveRecord::Base
 
   has_secure_password
   validates :password, length: { minimum: 6 }, allow_blank: true
+
+  def name
+  	self.firstName + " " + self.lastName
+  end
 
 	  # Returns the hash digest of the given string.
   def User.digest(string)
