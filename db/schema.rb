@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141025233532) do
+ActiveRecord::Schema.define(version: 20141026025815) do
 
   create_table "users", force: true do |t|
     t.string   "firstName"
@@ -24,6 +24,8 @@ ActiveRecord::Schema.define(version: 20141025233532) do
     t.string   "activation_digest"
     t.boolean  "activated",         default: false
     t.datetime "activated_at"
+    t.string   "reset_digest"
+    t.datetime "reset_sent_at"
   end
 
 end
