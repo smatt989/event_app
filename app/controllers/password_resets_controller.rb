@@ -20,6 +20,7 @@ class PasswordResetsController < ApplicationController
   end
 
   def update
+  	@user = User.find_by(email: params[:email].downcase)
   	if @user.password_reset_expired?
   	  flash[:danger] = "Password reset has expired."
   	  redirect_to new_password_reset_path
