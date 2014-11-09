@@ -1,5 +1,9 @@
 class User < ActiveRecord::Base
   has_many :events, dependent: :destroy
+  has_many :active_following_relationships, class_name: "FollowingRelationship", foreign_key: "follower_id", dependent: :destroy
+  has_many :passive_following_relationships, class_name: "FollowingRelationship", foreign_key: "followed_id", dependent: :destroy
+  has_many :following, through: :active_following_relationships, source: :followed
+  has_many :followers, through: :passive_following_relationships, source: :follower
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save :downcase_email
   before_create :create_activation_digest
@@ -17,6 +21,18 @@ class User < ActiveRecord::Base
 
   def name
   	self.firstName + " " + self.lastName
+  end
+
+  def follow(other_user)
+  	active_following_relationships.create(followed_id: other_user.id)
+  end
+
+  def unfollow(other_user)
+  	active_following_relationships.find_by(followed_id: other_user.id).destroy
+  end
+
+  def following?(other_user)
+  	following.include?(other_user)
   end
 
 	  # Returns the hash digest of the given string.

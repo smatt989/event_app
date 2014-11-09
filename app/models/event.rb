@@ -9,6 +9,12 @@ class Event < ActiveRecord::Base
   validate :valid_event_dates?
   validate :picture_size
 
+  def Event.from_users_followed_by(user)
+    following_ids = "SELECT followed_id FROM following_relationships
+                     WHERE  follower_id = :user_id"
+    where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: user)
+  end
+
   private 
     def valid_event_dates?
       if startTime && endTime
