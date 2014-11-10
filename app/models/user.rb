@@ -84,6 +84,12 @@ class User < ActiveRecord::Base
   	reset_sent_at < 2.hours.ago
   end
 
+  def as_json(options={})
+    options[:except] ||= [:password_digest, :remember_digest, :activation_digest, :activated, :activated_at, :reset_digest, :reset_sent_at]
+    options[:methods] ||= [:name]
+    super(options)
+  end
+
   private 
 
     def downcase_email

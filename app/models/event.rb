@@ -15,6 +15,15 @@ class Event < ActiveRecord::Base
     where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: user)
   end
 
+  def user_json
+  	user.to_json
+  end
+
+  def as_json(options={})
+    options[:methods] ||= [:user]
+    super(options)
+  end
+
   private 
     def valid_event_dates?
       if startTime && endTime
