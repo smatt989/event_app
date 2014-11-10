@@ -26,7 +26,7 @@ class UsersController < ApplicationController
 
   def followingEvents
   	@user = User.find(params[:id])
-  	@events = Event.from_users_followed_by(@user)
+  	@events = Event.shared_by_users_followed_by(@user)
   	respond_to do |format|
   	  format.json { render json: @events }
   	end

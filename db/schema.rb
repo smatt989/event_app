@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141108222921) do
+ActiveRecord::Schema.define(version: 20141110043733) do
+
+  create_table "event_shares", force: true do |t|
+    t.integer  "event_id"
+    t.integer  "sharer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "event_shares", ["event_id", "sharer_id"], name: "index_event_shares_on_event_id_and_sharer_id", unique: true
+  add_index "event_shares", ["event_id"], name: "index_event_shares_on_event_id"
+  add_index "event_shares", ["sharer_id"], name: "index_event_shares_on_sharer_id"
 
   create_table "events", force: true do |t|
     t.string   "name"

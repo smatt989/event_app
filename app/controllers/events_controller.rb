@@ -9,11 +9,21 @@ class EventsController < ApplicationController
   def create
   	@event = current_user.events.build(event_params)
   	if @event.save
+  	  user = @event.user
+  	  user.share(@event)
   	  flash[:success] = "Event created!"
   	  redirect_to root_url
   	else
   	  flash[:error] = "There was a problem saving your event"
   	  redirect_to root_url
+  	end
+  end
+
+  def sharers
+  	@event = Event.find(params[:id])
+  	@users = @event.sharers.paginate(page: params[:page])
+  	respond_to do |format|
+  	  format.json { render json: @users }
   	end
   end
 

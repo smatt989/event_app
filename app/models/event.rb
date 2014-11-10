@@ -1,5 +1,7 @@
 class Event < ActiveRecord::Base
   belongs_to :user
+  has_many :shared_relationships, class_name: "EventShare", foreign_key: "event_id", dependent: :destroy
+  has_many :sharers, through: :shared_relationships, source: :sharer
   default_scope -> { order('created_at DESC') }
   mount_uploader :picture, PictureUploader
   validates :user_id, presence: true
@@ -15,8 +17,12 @@ class Event < ActiveRecord::Base
     where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: user)
   end
 
-  def user_json
-  	user.to_json
+  def Event.shared_by_users_followed_by(user)
+  	following_ids = "SELECT followed_id FROM following_relationships
+  					 WHERE follower_id = :user_id"
+  	shared_event_ids = "SELECT DISTINCT event_id FROM event_shares
+  	              		WHERE sharer_id IN (#{following_ids}) OR sharer_id = :user_id"
+  	where("id IN (#{shared_event_ids})", user_id: user)
   end
 
   def as_json(options={})

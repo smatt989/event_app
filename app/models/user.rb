@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   has_many :passive_following_relationships, class_name: "FollowingRelationship", foreign_key: "followed_id", dependent: :destroy
   has_many :following, through: :active_following_relationships, source: :followed
   has_many :followers, through: :passive_following_relationships, source: :follower
+  has_many :event_relationships, class_name: "EventShare", foreign_key: "sharer_id", dependent: :destroy
+  has_many :shared_events, through: :event_relationships, source: :event
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save :downcase_email
   before_create :create_activation_digest
@@ -33,6 +35,18 @@ class User < ActiveRecord::Base
 
   def following?(other_user)
   	following.include?(other_user)
+  end
+
+  def share(event)
+  	event_relationships.create(event_id: event.id)
+  end
+
+  def unshare(event)
+  	event_relationships.find_by(event_id: event.id).destroy
+  end
+
+  def shared?(event)
+  	shared_events.include?(event)
   end
 
 	  # Returns the hash digest of the given string.
